@@ -1,4 +1,4 @@
 SJPG
-472 620
-mode
-NORLE
+200 300
+mode 1
+RLE
