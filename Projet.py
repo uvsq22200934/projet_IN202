@@ -29,7 +29,7 @@ nomImg=""
 
 
 ########################
-# BLOC
+# Question 1
 ########################
 
 def YCbCr(mat):
@@ -46,7 +46,7 @@ def YCbCr(mat):
     return matYCbCr
 
 ########################
-# BLOC
+# Question 2 
 ########################
 
 
@@ -72,6 +72,9 @@ def RGB(mat):
              
     return matRGB
 
+########################
+# Question 3
+########################
 
 def padding(mat):
     l = mat.shape[0]
@@ -100,7 +103,7 @@ def elimine_padding(mat_padding):
 
 
 ########################
-# BLOC
+# Question 4 : 
 ########################
 
 
@@ -114,7 +117,7 @@ def petite_mat(mat):
 
 
 ########################
-# BLOC
+# Question 5
 ########################
 
 
@@ -128,7 +131,7 @@ def matrice_doublee(mat):
 
 
 ########################
-# BLOC
+# Question 6 
 ########################
 
 
@@ -143,7 +146,7 @@ def blocs(mat):
     return liste_blocs
 
 ########################
-# BLOC
+# Question 7 
 ########################
 
 def transformee(blocs):
@@ -160,7 +163,7 @@ def detransformation(blocs):
     return blocs_detransformes 
 
 ########################
-# BLOC
+# Question 8 
 ########################
 
 def filtrage1(blocs,seuil):
@@ -169,7 +172,7 @@ def filtrage1(blocs,seuil):
             blocs[i] = 0
             
 ########################
-# BLOC
+# Question 9
 ########################
            
 
@@ -185,7 +188,7 @@ def blocs_compresses(image, mode):
     return image
 
 ########################
-# BLOC
+# Question 12 
 ########################
 
 def rle(texte):
@@ -203,6 +206,11 @@ def rle(texte):
             texte_rle.append('#',k)
         i += 1
     return texte_rle
+
+########################
+# Question 10, 11 
+########################
+
 
 def write_file(path: str, mode: int, rle: bool):
 
@@ -228,8 +236,44 @@ def write_file(path: str, mode: int, rle: bool):
                 for x in range(len(l[i][0])):
                     f.write(f"{int(l[i][y][x])} ")
             f.write("\n")
+            
+            
 
-import pickle 
+########################
+# Question 13
+########################
+
+def decompression(lignesY, lignesCb, lignesCr):
+
+    hauteur = len(lignesY) * 8
+    longueur = len(lignesY[0]) * 8
+
+    matY = np.zeros((hauteur, longueur), dtype=np.float32)
+    matCb = np.zeros((hauteur, longueur), dtype=np.float32)
+    matCr = np.zeros((hauteur, longueur), dtype=np.float32)
+
+    for i in range(len(lignesY)):
+        for j in range(len(lignesY[O])):
+            matY[i*8:(i+1)*8, j*8:(j+1)*8] = lignesY[i][j]
+            matCb[i*8:(i+1)*8, j*8:(j+1)*8] = lignesCb[i][j]
+            matCr[i*8:(i+1)*8, j*8:(j+1)*8] = lignesCr[i][j]
+
+    matYCbCr = [matY, matCb, matCr]
+
+    matrice_doublee(matYCbCr)
+
+    image_sans_padding = elimine_padding(matYCbCr)
+
+    image_final = RGB(image_sans_padding)
+    
+    return image_final
+
+
+
+########################
+# Question 14 
+########################
+
 def lectSJPG (fichier):
     liste1 = []
     f = open(fichier , 'r')
@@ -252,159 +296,9 @@ def lectSJPG (fichier):
 
 lectSJPG ('no_compression')
 
-#write_file("test1.png", 2, False)
-
-3078/3=1026 
 
 
 
 
 
 
-
-
-
-
-
-def decompression(blocsY, blocsCb, blocsCr):
-
-## - RLE ##
-
-    blocs = [blocsY, blocsCb, blocsCr]
-
-    l =[]
-    for i in range(len(blocs)):
-        for j in range(blocs[i]):
-            if blocs[i,j] != '#':
-                l.append(blocs[i,j])
-            elif blocs[i,j] == '#':
-                z =[]
-                n = 0
-                while n != ' ':
-                    z.append(blocs[i,j+1])
-                    n += 1
-                l.append(str(z))   
-
-
-    d = detransformation(l)
-
-## remettre blocs en matrice
-
-    matYCbCr = np.empty((len(d)//2, len(d)//2 3), dtype = np.uint8)
-    for n in range(0,len(d),8):
-    
-
-def 
-
-
-
-
-
-import numpy as np
-import scipy.fft as fft
-
-def decompress_image(Y_blocks, Cb_blocks, Cr_blocks):
-    # calcul de dimentions
-    blocks_longeur, blocks_largeur = len(Y_blocks), len(Y_blocks[0])
-    image_height = blocks_longeur * 8
-    image_width = blocks_largeur * 8
-
-    # Initialisation des mat
-    Y_matrix = np.zeros((image_height, image_width))
-    Cb_matrix = np.zeros((image_height, image_width))
-    Cr_matrix = np.zeros((image_height, image_width))
-
-    
-    for i in range(blocks_longeur):
-        for j in range(blocks_largeur):
-            
-            Y_block = idct2(Y_blocks[i][j])
-            Y_matrix[i*8:(i+1)*8, j*8:(j+1)*8] = Y_block
-
-            
-            Cb_block = idct2(Cb_blocks[i][j])
-            Cr_block = idct2(Cr_blocks[i][j])
-            Cb_matrix[i*8:(i+1)*8, j*8:(j+1)*8] = Cb_block
-            Cr_matrix[i*8:(i+1)*8, j*8:(j+1)*8] = Cr_block
-
-    # Convertion
-    R_matrix = Y_matrix + 1.402 * (Cr_matrix - 128)
-    G_matrix = Y_matrix - 0.344136 * (Cb_matrix - 128) - 0.714136 * (Cr_matrix - 128)
-    B_matrix = Y_matrix + 1.772 * (Cb_matrix - 128)
-
-    
-    R_matrix = np.clip(R_matrix, 0, 255).astype(np.uint8)
-    G_matrix = np.clip(G_matrix, 0, 255).astype(np.uint8)
-    B_matrix = np.clip(B_matrix, 0, 255).astype(np.uint8)
-
-    
-    return np.dstack((R_matrix, G_matrix, B_matrix))
-
-
-
-
-
-from PIL import Image
-
-def read_jpeg_file(file_path):
-    image = Image.open(file_path)
-
-    
-    image_ycbcr = image.convert("YCbCr")
-
-    
-    image_width, image_height = image_ycbcr.size
-
-    
-    num_blocks_width = image_width // 8
-    num_blocks_height = image_height // 8
-
-    Y_blocks = [[None] * num_blocks_width for _ in range(num_blocks_height)]
-    Cb_blocks = [[None] * num_blocks_width for _ in range(num_blocks_height)]
-    Cr_blocks = [[None] * num_blocks_width for _ in range(num_blocks_height)]
-    for i in range(num_blocks_height):
-        for j in range(num_blocks_width):
-            
-            Y_block = image_ycbcr.crop((j*8, i*8, (j+1)*8, (i+1)*8)).load()[0, 0]
-            Cb_block = image_ycbcr.crop((j*8//2, i*8//2, (j+1)*8//2, (i+1)*8//2)).load()[0, 0]
-            Cr_block = image_ycbcr.crop((j*8//2, i*8//2, (j+1)*8//2, (i+1)*8//2)).load()[0, 1]
-
-            # Stocker les blocs dans les listes de blocs
-            Y_blocks[i][j] = Y_block
-            Cb_blocks[i][j] = Cb_block
-            Cr_blocks[i][j] = Cr_block
-
-    
-    return Y_blocks, Cb_blocks, Cr_blocks
-
-
-# Exemple de valeurs à remplacer par vos propres informations
-file_type = "SJPG"
-image_height = 200
-image_width = 300
-compression_mode = "mode 1"
-compression_type = "RLE"
-
-
-with open("f", "w") as f:
-    f.write(file_type + "\n")
-    f.write(str(image_height) + " " + str(image_width) + "\n")
-    f.write(compression_mode + "\n")
-    f.write(compression_type + "\n")
-mat=load("test.png")
-compress_image(mat,2)
-
-
-
-
-with open("f", "w") as f:
-    f.write('SJPG\n')
-    f.write(str(mat.shape[0]))
-    f.write(' ')
-    f.write(str(mat.shape[1]))
-    f.write('\nmode 2')
-    f.write('\nNORLE\n')
-    
-    f.close()
-
-    
